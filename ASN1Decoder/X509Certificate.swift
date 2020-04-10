@@ -149,7 +149,7 @@ public class X509Certificate: CustomStringConvertible {
     
     public var subjectDistinguishedNameUnSpaceInterval: String? {
         if let subjectBlock = block1[X509BlockPosition.subject] {
-            return blockDistinguishedName(block: subjectBlock, spaceInterval: true)
+            return blockDistinguishedName(block: subjectBlock, spaceInterval: false)
         }
         return nil
     }
