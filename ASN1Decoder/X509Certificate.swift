@@ -102,7 +102,14 @@ public class X509Certificate: CustomStringConvertible {
     /// Returns the issuer (issuer distinguished name) value from the certificate as a String.
     public var issuerDistinguishedName: String? {
         if let issuerBlock = block1[X509BlockPosition.issuer] {
-            return blockDistinguishedName(block: issuerBlock)
+            return blockDistinguishedName(block: issuerBlock, spaceInterval: true)
+        }
+        return nil
+    }
+    
+    public var issuerDistinguishedNameUnSpaceInterval: String? {
+        if let issuerBlock = block1[X509BlockPosition.issuer] {
+            return blockDistinguishedName(block: issuerBlock, spaceInterval: false)
         }
         return nil
     }
@@ -135,7 +142,14 @@ public class X509Certificate: CustomStringConvertible {
     /// Returns the subject (subject distinguished name) value from the certificate as a String.
     public var subjectDistinguishedName: String? {
         if let subjectBlock = block1[X509BlockPosition.subject] {
-            return blockDistinguishedName(block: subjectBlock)
+            return blockDistinguishedName(block: subjectBlock, spaceInterval: true)
+        }
+        return nil
+    }
+    
+    public var subjectDistinguishedNameUnSpaceInterval: String? {
+        if let subjectBlock = block1[X509BlockPosition.subject] {
+            return blockDistinguishedName(block: subjectBlock, spaceInterval: true)
         }
         return nil
     }
@@ -281,7 +295,7 @@ public class X509Certificate: CustomStringConvertible {
     }
 
     // Format subject/issuer information in RFC1779
-    private func blockDistinguishedName(block: ASN1Object) -> String {
+    private func blockDistinguishedName(block: ASN1Object, spaceInterval: Bool) -> String {
         var result = ""
         let oidNames: [ASN1DistinguishedNames] = [
             .commonName,
@@ -300,7 +314,11 @@ public class X509Certificate: CustomStringConvertible {
         for oidName in oidNames {
             if let oidBlock = block.findOid(oidName.oid) {
                 if !result.isEmpty {
-                    result.append(", ")
+                    if spaceInterval {
+                        result.append(", ")
+                    } else {
+                        result.append(",")
+                    }
                 }
                 result.append(oidName.representation)
                 result.append("=")
